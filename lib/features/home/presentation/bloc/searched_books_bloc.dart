@@ -20,6 +20,8 @@ class SearchedBooksBloc extends Bloc<SearchedBooksEvent, SearchedBooksState> {
     SearchBooksEvent event,
     Emitter<SearchedBooksState> emit,
   ) async {
+    emit(SearchedBooksLoading.fromPrevState(state));
+
     final res = await _getBooks(GetBooksParams(query: event.query));
 
     res.fold(
@@ -31,13 +33,7 @@ class SearchedBooksBloc extends Bloc<SearchedBooksEvent, SearchedBooksState> {
         ),
       ),
       (books) {
-        final List<Book> newState = [];
-
-        if (books.isNotEmpty) {
-          newState.addAll(books);
-        }
-
-        emit(SearchedBooksSuccess(books: newState));
+        emit(SearchedBooksSuccess(books: books));
       },
     );
   }
